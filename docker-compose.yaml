@@ -1,0 +1,27 @@
+services:
+  jobber-auth-db:
+    image: postgres:15
+    container_name: jobberauth
+    restart: always
+    ports:
+      - "5432:5432" # Different port if running multiple DBs
+    environment:
+      POSTGRES_USER: jobberauth
+      POSTGRES_PASSWORD: jobberauthpassword
+      POSTGRES_DB: jobberauthdb
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    depends_on:
+      - jobber-auth-db  # Ensures pgAdmin starts after PostgreSQL
+    networks:
+      - pgnetwork
+networks:
+  pgnetwork:
+    driver: bridge
